@@ -36,6 +36,7 @@
 
 import java.util.NoSuchElementException;
 import adt.*;
+import java.io.*;
 
 /**
  *  The {@code Graph} class represents an undirected graph of vertices
@@ -194,8 +195,20 @@ public class Graph {
      *
      * @param args the command-line arguments
      */
-    public static void main(String[] args) {
-        
+    public static void main(String[] args) throws IOException{
+        FileReader file = new FileReader(args[0]);
+        BufferedReader reader = new BufferedReader(file);
+        int V = Integer.parseInt(reader.readLine()); System.out.println(V);
+        int E = Integer.parseInt(reader.readLine()); System.out.println(V);
+        Graph graph = new Graph(V);
+        String line;
+        while((line = reader.readLine())!=null){
+            String[] edges = line.split(" ");
+            int u = Integer.parseInt(edges[0]);
+            int v = Integer.parseInt(edges[1]);
+            graph.addEdge(u,v);
+        }
+        System.out.println(graph);  
     }
 
 }
