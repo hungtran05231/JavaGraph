@@ -61,7 +61,7 @@ import java.io.*;
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
-public class Graph {
+public class Graph{
     private static final String NEWLINE = System.getProperty("line.separator");
 
     private final int V;
@@ -82,6 +82,25 @@ public class Graph {
         adj = (Bag<Integer>[]) new Bag[V];
         for (int v = 0; v < V; v++) {
             adj[v] = new Bag<Integer>();
+        }
+    }
+
+    public Graph(String filepath) throws IOException{
+        FileReader file = new FileReader(filepath);
+        BufferedReader reader = new BufferedReader(file);
+        this.V = Integer.parseInt(reader.readLine());
+        Integer.parseInt(reader.readLine());
+        this.E=0;
+        String line;
+        adj = (Bag<Integer>[]) new Bag[V];
+        for (int v = 0; v < V; v++) {
+            adj[v] = new Bag<Integer>();
+        }
+        while((line = reader.readLine())!=null){
+            String[] edges = line.split(" ");
+            int u = Integer.parseInt(edges[0]);
+            int v = Integer.parseInt(edges[1]);
+            this.addEdge(u,v);
         }
     }
 
@@ -196,19 +215,7 @@ public class Graph {
      * @param args the command-line arguments
      */
     public static void main(String[] args) throws IOException{
-        FileReader file = new FileReader(args[0]);
-        BufferedReader reader = new BufferedReader(file);
-        int V = Integer.parseInt(reader.readLine()); System.out.println(V);
-        int E = Integer.parseInt(reader.readLine()); System.out.println(V);
-        Graph graph = new Graph(V);
-        String line;
-        while((line = reader.readLine())!=null){
-            String[] edges = line.split(" ");
-            int u = Integer.parseInt(edges[0]);
-            int v = Integer.parseInt(edges[1]);
-            graph.addEdge(u,v);
-        }
-        System.out.println(graph);  
+          
     }
 
 }
