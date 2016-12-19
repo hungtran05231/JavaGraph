@@ -99,6 +99,42 @@ public class Bag<Item> implements Iterable<Item> {
         n++;
     }
 
+    /**
+     * Find the item to this bag.
+     *
+     * @param  item the item to find from this bag
+     */
+    public boolean contains(Item item){
+        Node<Item> current;
+        for(current=first;current!=null;current=current.next){
+            if(item==current.item) return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Delete the item to this bag.
+     *
+     * @param  item the item to delete from this bag
+     */
+    public void delete(Item item){
+        if(this.contains(item)){
+            Node<Item> current;
+            Node<Item> previous=first;
+            for(current=first;current.item!=item;current=current.next){
+                previous = current;
+            }
+            if(current!=first){
+                previous.next=current.next;
+            }else{
+                first = first.next;
+            }
+            n--;
+        }else{
+            throw new NoSuchElementException();
+        }
+    }
 
     /**
      * Returns an iterator that iterates over the items in this bag in arbitrary order.
@@ -106,7 +142,7 @@ public class Bag<Item> implements Iterable<Item> {
      * @return an iterator that iterates over the items in this bag in arbitrary order
      */
     public Iterator<Item> iterator()  {
-        return new ListIterator<Item>(first);  
+        return new ListIterator<Item>(first); 
     }
 
     // an iterator, doesn't implement remove() since it's optional
@@ -134,6 +170,19 @@ public class Bag<Item> implements Iterable<Item> {
      * @param args the command-line arguments
      */
     public static void main(String[] args) {
+        Bag<Integer> bag = new Bag<Integer>();
+        for(int i=0;i<20;i++){
+            bag.add(i);
+        }
+        for(int v: bag){
+            System.out.println(v);
+        }
+        System.out.println(bag.contains(100));
+        System.out.println("----------------------");
+        bag.delete(19);
+        for(int v: bag){
+            System.out.println(v);
+        }
     }
 
 }

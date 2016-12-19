@@ -124,6 +124,8 @@ public class Graph{
         }
     }
 
+
+
     /**
      * Returns the number of vertices in this graph.
      *
@@ -163,6 +165,22 @@ public class Graph{
         adj[w].add(v);
     }
 
+    public void deleteEdge(int v, int w){
+        if(adj[v].contains(w)){
+            for(int u: adj[v]){
+                System.out.println("u::"+u);
+            }
+            adj[v].delete(w);
+            System.out.println("Deleted*******");
+            for(int u: adj[v]){
+                System.out.println("u::"+u);
+            }
+            adj[w].delete(v);
+            E--;
+        }else{
+            System.out.println("Not a edge!!!");
+        }
+    }
 
     /**
      * Returns the vertices adjacent to vertex {@code v}.

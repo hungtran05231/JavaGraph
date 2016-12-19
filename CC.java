@@ -110,6 +110,7 @@ public class CC {
         return id[v];
     }
 
+
     /**
      * Returns the number of vertices in the connected component containing vertex {@code v}.
      *
