@@ -1,5 +1,6 @@
 import java.util.*;
 import adt.*;
+import java.io.*;
 class MIM{
 	private ArrayList<Edge> edges;
 	private static class Edge{
@@ -23,8 +24,12 @@ class MIM{
 		Edge edge = new Edge(u,v);
 		edges.add(edge);
 	}
+	public int size(){
+		return edges.size();
+	}
 	public String toString(){
 		StringBuilder s = new StringBuilder();
+		s.append("Number Of Edges: "+size()+"\n");
 		for(Edge edge: edges){
 			s.append("Edge:{"+edge.u+","+edge.v+"}"+"\n");
 		}
@@ -33,18 +38,23 @@ class MIM{
 }
 public class MIMGreedy{
 	MIM mim;
-	public MIMGreedy(Graph G){
+	public MIMGreedy(){
 		mim = new MIM();
-		int vertex = G.adj(0).iterator().next();
-		mim.add(0,vertex);
-		for(int u: G.adj(vertex)){
-			G.deleteVertex(u);
+	}
+	public void caculateMIM(Graph G){
+		int start;
+		for(start=0; start<G.V(); start++ ){
+			if(G.checkVertex(start) && G.adj(start).iterator().hasNext()) break;
 		}
-		for(int u: G.adj(0)){
-			G.deleteVertex(u);
+		if(!G.adj(start).iterator().hasNext()) return;
+		int finish = G.adj(start).iterator().next();
+		mim.add(start,finish);
+		System.out.println("start::::"+start+"::::finish::::"+finish);
+		for(int x: G.adj(start,finish)){
+			G.deleteVertex(x);
 		}
-		G.deleteVertex(0);
-		G.deleteVertex(vertex);
+		G.deleteVertex(start);
+		G.deleteVertex(finish);
 		while(G.E()!=0){
 			int min = G.minDegree();
 			int u;
@@ -55,10 +65,7 @@ public class MIMGreedy{
 			for(int v: G.adj(u)){
 				if(G.checkVertex(v)==true && min==G.degree(v)){
 					mim.add(u,v);
-					for(int x: G.adj(v)){
-						G.deleteVertex(x);
-					}
-					for(int x: G.adj(u)){
+					for(int x: G.adj(u,v)){
 						G.deleteVertex(x);
 					}
 					G.deleteVertex(u);
@@ -70,6 +77,20 @@ public class MIMGreedy{
 		}
 	}
 	public static void main(String[] args) {
-		
+		try{
+			FileReader file = new FileReader(args[0]);
+			BufferedReader reader = new BufferedReader(file);
+			Graph graph = new Graph(reader);
+			CC cc = new CC(graph);
+			MIMGreedy mimgreedy = new MIMGreedy();
+			for(int i=0; i<cc.count(); i++){
+				Graph subgraph = new Graph(graph, cc.verticeList(i));
+				System.out.println(subgraph);
+				//mimgreedy.caculateMIM(subgraph);
+			}
+			//System.out.println(mimgreedy.mim);
+		}catch(IOException e){
+			System.out.println(e.toString());
+		}	
 	}
 }

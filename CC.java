@@ -57,6 +57,9 @@
  *  @author Robert Sedgewick
  *  @author Kevin Wayne
  */
+
+import java.util.*;
+
 public class CC {
     private boolean[] marked;   // marked[v] = has vertex v been marked?
     private int[] id;           // id[v] = id of connected component containing v
@@ -132,6 +135,13 @@ public class CC {
         return count;
     }
 
+    public ArrayList<Integer> verticeList(int id){
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        for(int v=0; v<this.id.length; v++)
+            if(id==this.id[v])
+                list.add(v);
+        return list;
+    }
     /**
      * Returns true if vertices {@code v} and {@code w} are in the same
      * connected component.

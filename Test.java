@@ -6,7 +6,6 @@ public class Test{
 			BufferedReader reader = new BufferedReader(file);
 			Graph graph = new Graph(reader);
 			MIMGreedy mimgreedy = new MIMGreedy(graph);
-			//System.out.println(graph.minAdjDegree(1));
 			System.out.println(mimgreedy.mim);
 			System.out.println(graph);
 		}catch(IOException e){

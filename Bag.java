@@ -108,9 +108,15 @@ public class Bag<Item> implements Iterable<Item> {
     public boolean contains(Item item){
         Node<Item> current;
         for(current=first;current!=null;current=current.next){
-            if(item==current.item) return true;
+            if(compareInteger(item,current.item)) return true;
         }
         return false;
+    }
+
+    private boolean compareInteger(Item item1, Item item2){
+        Integer value1 = (Integer) item1;
+        Integer value2 = (Integer) item2;
+        return value1.intValue() == value2.intValue();
     }
 
 
@@ -123,7 +129,7 @@ public class Bag<Item> implements Iterable<Item> {
         if(this.contains(item)){
             Node<Item> current;
             Node<Item> previous=first;
-            for(current=first;current.item!=item;current=current.next){
+            for(current=first; !compareInteger(item, current.item);current=current.next){
                 previous = current;
             }
             if(current!=first){
@@ -132,7 +138,7 @@ public class Bag<Item> implements Iterable<Item> {
                 first = first.next;
             }
             n--;
-        }else{
+        }else{            
             throw new NoSuchElementException();
         }
     }

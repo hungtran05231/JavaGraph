@@ -34,7 +34,7 @@
  *  
  ******************************************************************************/
 
-import java.util.NoSuchElementException;
+import java.util.*;
 import adt.*;
 import java.io.*;
 
@@ -119,8 +119,20 @@ public class Graph{
             }
         }
     }
-
-
+    /**
+     * Initial a subgraph induced from a vertices set
+     * @param G the graph and array of vertices to induce
+     */
+    public Graph(Graph G, ArrayList<Integer> vertices){
+        this(G);
+        for(int i=0; i<V; i++) vertexState[i] = false;
+        for(int u: vertices) vertexState[u] =  true;
+        for(int i=0; i<V; i++)
+            if(!vertexState[i]){
+                vertexState[i]=true;
+                deleteVertex(i);
+            }
+    }
 
     /**
      * Returns the number of vertices in this graph.
@@ -172,10 +184,12 @@ public class Graph{
     }
 
     public void deleteVertex(int v){
-        for(int w: adj[v]){
-            deleteEdge(v,w);
-        }
-        vertexState[v]=false;        
+        if(vertexState[v]){
+            for(int w: adj[v]){
+                deleteEdge(v,w);
+            }
+            vertexState[v]=false;
+        }        
     }
     /**
      * Returns the vertices adjacent to vertex {@code v}.
@@ -189,6 +203,14 @@ public class Graph{
         return adj[v];
     }
 
+    public ArrayList<Integer> adj(int u, int v){
+        ArrayList<Integer> list = new ArrayList<Integer>();
+        validateVertex(u);
+        validateVertex(v);
+        for(int x: adj(u)) list.add(x);
+        for(int x: adj[v]) list.add(x);
+        return list;
+    }
     /**
      * Returns the degree of vertex {@code v}.
      *
@@ -232,7 +254,10 @@ public class Graph{
      */
     public String toString() {
         StringBuilder s = new StringBuilder();
-        s.append(V + " vertices, " + E + " edges " + NEWLINE);
+        int verticeCount=0;
+        for(int i=0; i<V; i++)
+            if(vertexState[i]) verticeCount++;
+        s.append(verticeCount+ " vertices, " + E + " edges " + NEWLINE);
         for (int v = 0; v < V; v++) {
             if(vertexState[v]){
                 s.append(v + ": ");
@@ -251,8 +276,19 @@ public class Graph{
      *
      * @param args the command-line arguments
      */
-    public static void main(String[] args) throws IOException{
-          
+    public static void main(String[] args){
+          try{
+            FileReader file = new FileReader(args[0]);
+            BufferedReader reader = new BufferedReader(file);
+            Graph graph = new Graph(reader);
+            System.out.println(graph);
+            ArrayList<Integer> vertices = new ArrayList<Integer>();
+            vertices.add(0);vertices.add(1);vertices.add(2);
+            Graph subgraph = new Graph(graph,vertices);
+            System.out.println(subgraph);
+          }catch(IOException e){
+            System.out.println(e.toString());
+          }
     }
 
 }
