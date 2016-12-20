@@ -67,6 +67,7 @@ public class Graph{
     private final int V;
     private int E;
     private Bag<Integer>[] adj;
+    private boolean[] vertexState;
     
     /**
      * Initializes an empty graph with {@code V} vertices and 0 edges.
@@ -79,23 +80,18 @@ public class Graph{
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
+        vertexState = new boolean[V];
         adj = (Bag<Integer>[]) new Bag[V];
         for (int v = 0; v < V; v++) {
             adj[v] = new Bag<Integer>();
+            vertexState[v]=true;
         }
     }
 
-    public Graph(String filepath) throws IOException{
-        FileReader file = new FileReader(filepath);
-        BufferedReader reader = new BufferedReader(file);
-        this.V = Integer.parseInt(reader.readLine());
-        Integer.parseInt(reader.readLine());
-        this.E=0;
+    public Graph(BufferedReader reader) throws IOException{
+        this(Integer.parseInt(reader.readLine()));      
         String line;
-        adj = (Bag<Integer>[]) new Bag[V];
-        for (int v = 0; v < V; v++) {
-            adj[v] = new Bag<Integer>();
-        }
+        reader.readLine();
         while((line = reader.readLine())!=null){
             String[] edges = line.split(" ");
             int u = Integer.parseInt(edges[0]);
@@ -167,14 +163,7 @@ public class Graph{
 
     public void deleteEdge(int v, int w){
         if(adj[v].contains(w)){
-            for(int u: adj[v]){
-                System.out.println("u::"+u);
-            }
             adj[v].delete(w);
-            System.out.println("Deleted*******");
-            for(int u: adj[v]){
-                System.out.println("u::"+u);
-            }
             adj[w].delete(v);
             E--;
         }else{
@@ -182,6 +171,12 @@ public class Graph{
         }
     }
 
+    public void deleteVertex(int v){
+        for(int w: adj[v]){
+            deleteEdge(v,w);
+        }
+        vertexState[v]=false;        
+    }
     /**
      * Returns the vertices adjacent to vertex {@code v}.
      *
@@ -206,7 +201,29 @@ public class Graph{
         return adj[v].size();
     }
 
+    public int minDegree(){
+        int min = -1;
+        for(int v=0; v<V;v++){
+            if(vertexState[v]==true){
+                if((min==-1)||(min>degree(v))) min = degree(v);
+            }
+        }
+        return min;
+    }
 
+    public int minAdjDegree(int v){
+        int min = -1;
+        for(int u: adj[v]){
+            if(vertexState[u]==true){
+                if((min==-1)||(min>degree(u))) min = degree(u);
+            }   
+        }
+        return min; 
+    }
+
+    public boolean checkVertex(int v){
+        return vertexState[v];
+    } 
     /**
      * Returns a string representation of this graph.
      *
@@ -217,11 +234,13 @@ public class Graph{
         StringBuilder s = new StringBuilder();
         s.append(V + " vertices, " + E + " edges " + NEWLINE);
         for (int v = 0; v < V; v++) {
-            s.append(v + ": ");
-            for (int w : adj[v]) {
-                s.append(w + " ");
+            if(vertexState[v]){
+                s.append(v + ": ");
+                for (int w : adj[v]) {
+                    s.append(w + " ");
+                }
+                s.append(NEWLINE);
             }
-            s.append(NEWLINE);
         }
         return s.toString();
     }

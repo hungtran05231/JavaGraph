@@ -77,6 +77,7 @@ public class Bag<Item> implements Iterable<Item> {
         return first == null;
     }
 
+    
     /**
      * Returns the number of items in this bag.
      *
